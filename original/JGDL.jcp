@@ -1,0 +1,38 @@
+! ** JCreator Project File (C)2000
+! ********** DO NOT EDIT *********
+
+VERSION := "1.10"
+LABEL := "JGDLNew"
+JDKPROFILE := "JDK version 1.3.1_01"
+ACTIVE := "1"
+OUTPUTPATH := "..\\\\JGDL"
+COMPILER := "<Default>"
+
+! Start RunTime Configuration Structure
+#[BeginRunTime]LABEL := "<Default>" RUNAPPLIC := "" RUNAPPLET := "" PARAM := "" RUN := "" CHECK := "10" #[EndRunTime]
+! Start Required Libraries Structure
+
+! Start Project Folder Structure
+#[BeginFolder]
+LABEL := "Root"
+FILTER := ""
+
+#[BeginFile]SOURCE := "JGDL\\JGDLTimeAccumulator.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLFont.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLVector.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLTimeHandler.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLSprite.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLSoundManager.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLSound.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLScene.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLObject.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLMain.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLList.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLLayer.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLInputManager.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLImage.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLFrame.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLBrick.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLAnimation.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLVideoManager.java" #[EndFile]
+#[EndFolder]

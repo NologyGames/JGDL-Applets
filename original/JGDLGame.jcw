@@ -1,0 +1,16 @@
+! ** JCreator Workspace File (C)2000
+! ********** DO NOT EDIT *********
+
+VERSION := "1.00"
+LABEL := "JGDLGame"
+
+! Start Project Structure
+#[BeginProject]SOURCE := "\\JGDLGame.jcp" #[EndProject]
+
+! Start Last Document Structure
+#[BeginFile]SOURCE := "\\JGDL.html" #[EndFile]
+#[BeginFile]SOURCE := "\\MyGame.java" #[EndFile]
+#[BeginFile]SOURCE := "\\MyScene.java" #[EndFile]
+
+! Start Breakpoint Structure
+

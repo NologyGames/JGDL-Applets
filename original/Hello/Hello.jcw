@@ -1,0 +1,16 @@
+! ** JCreator Workspace File (C)2000
+! ********** DO NOT EDIT *********
+
+VERSION := "1.00"
+LABEL := "Hello"
+
+! Start Project Structure
+#[BeginProject]SOURCE := "..\\..\\J2ME\\HelloWorld\\HelloWorld.jcp" #[EndProject]
+
+! Start Last Document Structure
+#[BeginFile]SOURCE := "..\\..\\J2ME\\HelloWorld\\Hello.java" #[EndFile]
+#[BeginFile]SOURCE := "..\\..\\J2ME\\HelloWorld\\HelloCanvas.java" #[EndFile]
+
+! Start Breakpoint Structure
+#[BeginBreakpoint]SOURCE := "\\HelloLevel.java" CLASS := "HelloLevel" VALUE := "83" CHECK := "1" #[EndBreakpoint]
+

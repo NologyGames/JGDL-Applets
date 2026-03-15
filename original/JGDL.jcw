@@ -1,0 +1,20 @@
+! ** JCreator Workspace File (C)2000
+! ********** DO NOT EDIT *********
+
+VERSION := "1.00"
+LABEL := "JGDL"
+
+! Start Project Structure
+
+! Start Last Document Structure
+#[BeginFile]SOURCE := "\\JGDL\\JGDLAnimation.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLSprite.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLVector.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLImage.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLInputManager.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLMain.java" #[EndFile]
+#[BeginFile]SOURCE := "\\MyScene.java" #[EndFile]
+#[BeginFile]SOURCE := "\\JGDL\\JGDLVideoManager.java" #[EndFile]
+
+! Start Breakpoint Structure
+

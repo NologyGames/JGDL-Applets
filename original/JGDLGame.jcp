@@ -1,0 +1,23 @@
+! ** JCreator Project File (C)2000
+! ********** DO NOT EDIT *********
+
+VERSION := "1.10"
+LABEL := "JGDLGame"
+JDKPROFILE := "JDK version 1.3.1_01"
+ACTIVE := "1"
+OUTPUTPATH := "..\\\\JGDL"
+COMPILER := "<Default>"
+
+! Start RunTime Configuration Structure
+#[BeginRunTime]LABEL := "<Default>" RUNAPPLIC := "" RUNAPPLET := "" PARAM := "" RUN := "\\JGDL.html" CHECK := "10" #[EndRunTime]
+! Start Required Libraries Structure
+
+! Start Project Folder Structure
+#[BeginFolder]
+LABEL := "Root"
+FILTER := ""
+
+#[BeginFile]SOURCE := "\\JGDL.html" #[EndFile]
+#[BeginFile]SOURCE := "\\MyScene.java" #[EndFile]
+#[BeginFile]SOURCE := "\\MyGame.java" #[EndFile]
+#[EndFolder]

@@ -1,0 +1,43 @@
+const HELLO = {
+  CANVAS_WIDTH: 448,
+  CANVAS_HEIGHT: 336,
+  MAT_X: 9,
+  MAT_Y: 10,
+  MAT_SIZE: 90,
+  PIECE_SIZE: 31,
+  UP_LEFT_X: 9,
+  UP_LEFT_Y: 9,
+  // Next line bar (below phone grid): when full, new row of phones arrives. Grid bottom = 9+10*31 = 319, so bar at 320
+  NEXT_LINE_X: 7,
+  NEXT_LINE_Y: 320,
+  NEXT_LINE_W: 284,
+  NEXT_LINE_H: 8,
+  // Next line bar top edge (Ringo and level bar must end above this)
+  NEXT_LINE_TOP: 320,
+  // Score panel: frame (box) position; text is drawn INSIDE the frame with padding
+  PANEL_BOX_X: 322,
+  PANEL_BOX_Y: 82,
+  PANEL_BOX_W: 112,
+  PANEL_LINE_HEIGHT: 20,
+  PANEL_BOX_PAD: 10,
+  // Ringo: above next line bar (bottom <= 320), level bar bottom-aligned with Ringo
+  RINGO_X: 298,
+  RINGO_Y: 145,
+  RINGO_W: 105,
+  RINGO_H: 175,
+  LEVEL_BAR_X: 400,
+  LEVEL_BAR_Y: 180,
+  LEVEL_BAR_W: 14,
+  LEVEL_BAR_H: 140,
+  POINTS_PER_PHONE: 321,
+  NEW_LINE_MS: 4000,
+  COLORS: ['#e53935', '#2e7d32', '#1565c0', '#f9a825'],
+  PHONES_TO_COLLECT: 50,
+  LEVELS: [
+    { phonesToCollect: 50, newLineMs: 5000 },
+    { phonesToCollect: 60, newLineMs: 4500 },
+    { phonesToCollect: 70, newLineMs: 4000 },
+    { phonesToCollect: 80, newLineMs: 3500 },
+    { phonesToCollect: 90, newLineMs: 3000 },
+  ],
+};

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello!</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="game-canvas" width="448" height="336" tabindex="0"></canvas>
+    <div id="ui-overlay">
+      <div id="loading" class="hidden">
+        <p>Loading...</p>
+      </div>
+      <div id="main-menu">
+        <h1>Hello!</h1>
+        <p class="click-hint">Click to start</p>
+      </div>
+      <div id="hud" class="hidden" aria-hidden="true" style="display:none">
+        <div id="level-info">Level <span id="level-num">1</span></div>
+        <div id="popcorn-info">Phones: <span id="found">0</span> / <span id="target">50</span></div>
+        <div id="score-info">Score: <span id="score">0</span></div>
+      </div>
+      <div id="popup" class="hidden">
+        <div id="popup-content">
+          <h2 id="popup-title">Game Over</h2>
+          <div id="popup-buttons">
+            <button id="btn-play-again">Play Again</button>
+            <button id="btn-next-level" class="hidden">Next Level</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="text-align:center;margin-top:8px;"><a href="index.html" style="color:#888;">← Back to games</a></p>
+  <div id="debug-log" style="display:none; max-height:120px; overflow:auto; background:#111; color:#0f0; font:12px monospace; padding:8px; margin:8px auto; max-width:448px;"></div>
+  <script>
+    window._debug = function(msg) {
+      console.log(msg);
+      var el = document.getElementById('debug-log');
+      if (el && el.style.display !== 'none') { el.innerHTML += msg + '<br>'; el.scrollTop = el.scrollHeight; }
+    };
+    if (location.search.indexOf('debug=1') !== -1) document.getElementById('debug-log').style.display = 'block';
+  </script>
+  <script src="js/asset-loader.js"></script>
+  <script src="js/jgdl/jgdl-vector.js"></script>
+  <script src="js/jgdl/jgdl-time.js"></script>
+  <script src="js/jgdl/jgdl-input.js"></script>
+  <script src="js/jgdl/jgdl-video.js"></script>
+  <script src="js/jgdl/jgdl-sound.js"></script>
+  <script src="js/jgdl/jgdl-animation.js"></script>
+  <script src="js/jgdl/jgdl-sprite.js"></script>
+  <script src="js/jgdl/jgdl-layer.js"></script>
+  <script src="js/jgdl/jgdl-scene.js"></script>
+  <script src="js/jgdl/jgdl-main.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/hello-constants.js?v=4"></script>
+  <script src="js/hello-assets.js"></script>
+  <script src="js/hello-game.js?v=4"></script>
+  <script src="js/hello-main.js"></script>
+</body>
+</html>

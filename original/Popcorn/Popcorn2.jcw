@@ -1,0 +1,16 @@
+! ** JCreator Workspace File (C)2000
+! ********** DO NOT EDIT *********
+
+VERSION := "1.00"
+LABEL := "Popcorn"
+
+! Start Project Structure
+#[BeginProject]SOURCE := "\\Popcorn.jcp" #[EndProject]
+
+! Start Last Document Structure
+#[BeginFile]SOURCE := "\\PopLevel.java" #[EndFile]
+#[BeginFile]SOURCE := "\\Classes\\SPM.html" #[EndFile]
+#[BeginFile]SOURCE := "\\Popcorn.java" #[EndFile]
+
+! Start Breakpoint Structure
+
