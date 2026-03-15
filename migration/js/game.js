@@ -35,6 +35,13 @@ function createPopcornGame(canvas, ui) {
 
   const CORN_IMGS = ['inp_RedCorn.gif', 'inp_DarkGreenCorn.gif', 'inp_BlueCorn.gif', 'inp_YellowCorn.gif'];
 
+  var SPM_ANIM = typeof window !== 'undefined' && window.SPM_ANIM ? window.SPM_ANIM : {};
+  var flameStates = [];
+  var shakeTime = 0;
+  for (var fi = 0; fi < 18; fi++) {
+    flameStates.push({ animIndex: fi < 9 ? 0 : 0, time: (fi * 37) % 300 });
+  }
+
   function rand() {
     return Math.floor(Math.random() * 0x7fffffff);
   }
@@ -133,13 +140,21 @@ function createPopcornGame(canvas, ui) {
     return AssetLoader.getImage(path);
   }
 
+  function drawSpriteFrame(img, frameIndex, cellW, cellH, dx, dy, dw, dh) {
+    if (!img || frameIndex < 0) return;
+    var cols = Math.max(1, Math.floor(img.width / cellW));
+    var sx = (frameIndex % cols) * cellW;
+    var sy = Math.floor(frameIndex / cols) * cellH;
+    ctx.drawImage(img, sx, sy, cellW, cellH, dx, dy, dw || cellW, dh || cellH);
+  }
+
   function draw() {
     const base = assets ? (assets.ImagesDir || assets.basePath || '') : '';
     if (state === STATES.MAIN) {
       const mainImg = assets && getImg('spr_MainScreen.gif');
       if (mainImg) ctx.drawImage(mainImg, 0, 0, width, height);
       else { ctx.fillStyle = '#3d2914'; ctx.fillRect(0, 0, width, height); }
-      effects.draw();
+      effects.draw(getImg);
       return;
     }
     if (assets && getImg('bkg_Movies.gif')) {
@@ -150,6 +165,30 @@ function createPopcornGame(canvas, ui) {
       ctx.fillStyle = '#4a3728';
       ctx.fillRect(10, 320, 140, 16);
       ctx.fillRect(298, 320, 140, 16);
+    }
+
+    var stoveImg = assets && getImg('spr_Stove.gif');
+    if (stoveImg) {
+      ctx.drawImage(stoveImg, 0, 0, 140, 16, 10, 320, 140, 16);
+      ctx.drawImage(stoveImg, 0, 0, 140, 16, 298, 320, 140, 16);
+    }
+
+    var fireImg = assets && getImg('spr_StoveFire.gif');
+    if (fireImg && SPM_ANIM.FLAME_POSITIONS) {
+      var fw = 14, fh = 21;
+      for (var fi = 0; fi < 18; fi++) {
+        var st = flameStates[fi];
+        var anim = SPM_ANIM.FLAME_ANIMS && SPM_ANIM.FLAME_ANIMS[st.animIndex];
+        var frameMs = SPM_ANIM.FLAME_FRAME_MS && SPM_ANIM.FLAME_FRAME_MS[st.animIndex];
+        if (anim && frameMs) {
+          var idx = Math.floor(st.time / frameMs) % anim.length;
+          var f = anim[idx];
+          if (f >= 0) {
+            var pos = SPM_ANIM.FLAME_POSITIONS[fi];
+            drawSpriteFrame(fireImg, f, fw, fh, pos.x, pos.y, fw, fh);
+          }
+        }
+      }
     }
 
     for (let bi = 0; bi < 2; bi++) {
@@ -175,7 +214,10 @@ function createPopcornGame(canvas, ui) {
         const imgName = CORN_IMGS[(p.id - 1) % 4];
         const img = assets && getImg(imgName);
         if (img) {
-          ctx.drawImage(img, 0, 0, 17, 17, x, y, 17, 17);
+          var wpa = p.animState != null ? p.animState : (p.falling ? SPM_ANIM.WPA_FALLING : SPM_ANIM.WPA_STOPED1);
+          var anim = SPM_ANIM.getPieceAnimByIndex && SPM_ANIM.getPieceAnimByIndex(wpa);
+          var frameIdx = anim && SPM_ANIM.getPieceFrameIndex ? SPM_ANIM.getPieceFrameIndex(anim, p.animTimer || 0) : 0;
+          drawSpriteFrame(img, frameIdx, 17, 17, x, y, 17, 17);
         } else {
           ctx.fillStyle = CONST.COLORS[(p.id - 1) % 4];
           ctx.beginPath();
@@ -192,7 +234,10 @@ function createPopcornGame(canvas, ui) {
           const imgName = CORN_IMGS[(np.id - 1) % 4];
           const img = assets && getImg(imgName);
           if (img) {
-            ctx.drawImage(img, 0, 0, 17, 17, x, y, 17, 17);
+            var wpa = np.animState != null ? np.animState : SPM_ANIM.WPA_FALLING;
+            var anim = SPM_ANIM.getPieceAnimByIndex && SPM_ANIM.getPieceAnimByIndex(wpa);
+            var frameIdx = anim && SPM_ANIM.getPieceFrameIndex ? SPM_ANIM.getPieceFrameIndex(anim, np.animTimer || 0) : 0;
+            drawSpriteFrame(img, frameIdx, 17, 17, x, y, 17, 17);
           } else {
             ctx.fillStyle = CONST.COLORS[(np.id - 1) % 4];
             ctx.beginPath();
@@ -203,12 +248,140 @@ function createPopcornGame(canvas, ui) {
       }
     }
 
-    effects.draw();
+    var layInfoImg = assets && getImg('lay_Info.gif');
+    if (layInfoImg) ctx.drawImage(layInfoImg, 0, 0, 127, 166, 161, 0, 127, 166);
+
+    var sensorBackImg = assets && getImg('lay_sensorback.gif');
+    var sensorPointImg = assets && getImg('inp_SensorDisplay.gif');
+    if (sensorBackImg && sensorPointImg && boards[0] && boards[1]) {
+      var py0 = boards[0].posY(), py1 = boards[1].posY();
+      var iDif = Math.abs(py0 - py1);
+      var iMaxDif = 144;
+      var iAnims = 25;
+      var iAnim = Math.min(24, Math.floor((Math.min(iDif, iMaxDif) * iAnims) / iMaxDif));
+      var bSum = py0 > py1;
+      var sensBackFrame = iAnim < 5 ? 0 : (iAnim > 15 ? (bSum ? 2 : 3) : 1);
+      var sensPointFrame = iAnim + (bSum ? 25 : 0);
+      var sbCols = Math.max(1, Math.floor(sensorBackImg.width / 79));
+      var sbFx = (sensBackFrame % sbCols) * 79;
+      var sbFy = Math.floor(sensBackFrame / sbCols) * 51;
+      ctx.drawImage(sensorBackImg, sbFx, sbFy, 79, 51, 184, 105, 79, 51);
+      drawSpriteFrame(sensorPointImg, sensPointFrame, 44, 19, 202, 117, 44, 19);
+    }
+
+    var popsBarImg = assets && getImg('spr_PopsBar.gif');
+    if (popsBarImg && state !== STATES.MAIN) {
+      var progress = cornsToFind > 0 ? Math.min(1, foundCorns / cornsToFind) : 0;
+      var barW = 80, barH = 16;
+      var cols = Math.max(1, Math.floor(popsBarImg.width / barW));
+      ctx.drawImage(popsBarImg, (1 % cols) * barW, 0, barW, barH, 184, 60, barW, barH);
+      if (progress > 0) {
+        var fillW = barW * progress;
+        ctx.drawImage(popsBarImg, 0, 0, fillW, barH, 184, 60, fillW, barH);
+      }
+    }
+
+    var shakeImg = assets && getImg('spr_alavanca.gif');
+    if (shakeImg && SPM_ANIM.SHAKE_FRAMES_BOARD1) {
+      for (var bi = 0; bi < 2; bi++) {
+        var b = boards[bi];
+        var px = b.posX(), py = b.posY();
+        var frames = bi === 0 ? SPM_ANIM.SHAKE_FRAMES_BOARD1 : SPM_ANIM.SHAKE_FRAMES_BOARD2;
+        var frameIdx = frames[Math.floor(shakeTime / (SPM_ANIM.SHAKE_FRAME_MS || 20)) % frames.length];
+        drawSpriteFrame(shakeImg, frameIdx, 124, 41, px - 2, py - 62, 124, 41);
+      }
+    }
+
+    var colorLightsImg = assets && getImg('spr_colorlights.gif');
+    if (colorLightsImg) {
+      for (var bi = 0; bi < 2; bi++) {
+        var b = boards[bi];
+        var px = b.posX(), py = b.posY();
+        for (var c = 0; c < MAT_X; c++) {
+          var np = b.newPiecesRef[c];
+          var frame = np ? (np.id - 1) : 5;
+          if (frame >= 0 && frame <= 5) drawSpriteFrame(colorLightsImg, frame, 6, 6, px + 5 + c * 17, py - 8, 6, 6);
+        }
+      }
+    }
+
+    for (let bi = 0; bi < 2; bi++) {
+      const b = boards[bi];
+      const px = b.posX();
+      const py = b.posY();
+      for (let i = 0; i < MAT_SIZE; i++) {
+        const p = b.matrixRef[i];
+        if (!p || p.effect !== WPE_EXPLODE) continue;
+        const x = px + p.x;
+        const y = py + p.y;
+        const imgName = CORN_IMGS[(p.id - 1) % 4];
+        const img = assets && getImg(imgName);
+        if (img) {
+          var burnAnim = SPM_ANIM.getPieceAnimByIndex && SPM_ANIM.getPieceAnimByIndex(SPM_ANIM.WPA_BURNING1);
+          var frameIdx = burnAnim && SPM_ANIM.getPieceFrameIndex ? SPM_ANIM.getPieceFrameIndex(burnAnim, p.animTimer || 0) : 0;
+          drawSpriteFrame(img, frameIdx, 17, 17, x, y, 17, 17);
+        }
+      }
+    }
+
+    effects.draw(getImg);
   }
 
   function update(dt) {
     if (paused) return;
     if (levelRef) syncLevelRef();
+
+    var dtMs = dt * 1000;
+    if (SPM_ANIM.FLAME_FRAME_MS && SPM_ANIM.FLAME_ANIMS) {
+      for (var fi = 0; fi < flameStates.length; fi++) {
+        var st = flameStates[fi];
+        st.time += dtMs;
+        var anim = SPM_ANIM.FLAME_ANIMS[st.animIndex];
+        var frameMs = SPM_ANIM.FLAME_FRAME_MS[st.animIndex];
+        if (anim && frameMs && anim.length) {
+          var total = anim.length * frameMs;
+          if (st.animIndex === 0 && st.time >= total) {
+            st.animIndex = 1;
+            st.time = st.time % total;
+          } else if (st.animIndex === 1 && total > 0) {
+            st.time = st.time % total;
+          }
+        }
+      }
+    }
+    shakeTime += dtMs;
+
+    var WPA_FALLING = SPM_ANIM.WPA_FALLING != null ? SPM_ANIM.WPA_FALLING : 28;
+    var WPA_FALLED1 = SPM_ANIM.WPA_FALLED1 != null ? SPM_ANIM.WPA_FALLED1 : 5;
+    var WPA_STOPED1 = SPM_ANIM.WPA_STOPED1 != null ? SPM_ANIM.WPA_STOPED1 : 1;
+    var WPA_BURNING1 = SPM_ANIM.WPA_BURNING1 != null ? SPM_ANIM.WPA_BURNING1 : 13;
+    for (var bi = 0; bi < 2; bi++) {
+      var b = boards[bi];
+      for (var i = 0; i < MAT_SIZE; i++) {
+        var p = b.matrixRef[i];
+        if (p) {
+          if (p.animTimer == null) p.animTimer = 0;
+          p.animTimer += dtMs;
+          if (p.effect === 1) p.animState = WPA_BURNING1;
+          else if (p.falling) p.animState = WPA_FALLING;
+          else if (p.animState === WPA_FALLING) {
+            p.animState = (rand() % 2 === 0) ? WPA_FALLED1 : (SPM_ANIM.WPA_FALLED2 != null ? SPM_ANIM.WPA_FALLED2 : 6);
+            p.animTimer = 0;
+          } else if ((p.animState === WPA_FALLED1 && p.animTimer >= 2730) || (p.animState === (SPM_ANIM.WPA_FALLED2 != null ? SPM_ANIM.WPA_FALLED2 : 6) && p.animTimer >= 2490)) {
+            p.animState = WPA_STOPED1;
+            p.animTimer = 0;
+          } else if (p.animState == null) p.animState = WPA_STOPED1;
+        }
+      }
+      for (var c = 0; c < MAT_X; c++) {
+        var np = b.newPiecesRef[c];
+        if (np) {
+          if (np.animTimer == null) np.animTimer = 0;
+          np.animTimer += dtMs;
+          if (np.animState == null) np.animState = WPA_FALLING;
+        }
+      }
+    }
 
     if (state === STATES.PREGAME) {
       loadLinesTimer += dt * 1000;

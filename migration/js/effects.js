@@ -1,6 +1,8 @@
 function createEffects(ctx) {
   const effects = [];
   const MAX = 200;
+  const EXPLOSION_FRAME_MS = 0.1;   // 100ms per frame (50% slower)
+  const EXPLOSION_FRAMES = 16;
 
   function addEffect(type, x, y, vx, vy) {
     if (effects.length >= MAX) return;
@@ -8,9 +10,17 @@ function createEffects(ctx) {
       type,
       x, y, vx, vy,
       t: 0,
-      maxT: type === 'popcorn' ? 1.2 : 0.5,
-      frame: Math.floor(Math.random() * 5),
+      maxT: type === 'popcorn' ? 1.2 : 1.7,
+      frame: type === 'popcorn' ? Math.floor(Math.random() * 20) : 0,
     });
+  }
+
+  function drawSpriteFrame(ctx, img, frameIndex, cellW, cellH, dx, dy, dw, dh) {
+    if (!img || frameIndex < 0) return;
+    var cols = Math.max(1, Math.floor(img.width / cellW));
+    var sx = (frameIndex % cols) * cellW;
+    var sy = Math.floor(frameIndex / cols) * cellH;
+    ctx.drawImage(img, sx, sy, cellW, cellH, dx, dy, dw || cellW, dh || cellH);
   }
 
   return {
@@ -36,19 +46,31 @@ function createEffects(ctx) {
         }
       }
     },
-    draw() {
+    draw(getImg) {
       effects.forEach(e => {
         if (e.type === 'popcorn') {
-          ctx.fillStyle = '#f5deb3';
-          ctx.beginPath();
-          ctx.arc(e.x, e.y, 4, 0, Math.PI * 2);
-          ctx.fill();
+          var img = getImg && getImg('inp_PopCorn.gif');
+          if (img) {
+            var f = Math.min(e.frame, 19);
+            drawSpriteFrame(ctx, img, f, 35, 35, e.x - 17, e.y - 17, 35, 35);
+          } else {
+            ctx.fillStyle = '#f5deb3';
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, 4, 0, Math.PI * 2);
+            ctx.fill();
+          }
         } else {
-          const s = 1 - e.t / e.maxT;
-          ctx.fillStyle = `rgba(255, 200, 50, ${s})`;
-          ctx.beginPath();
-          ctx.arc(e.x, e.y, 8 * s, 0, Math.PI * 2);
-          ctx.fill();
+          var img = getImg && getImg('spr_Explosion.gif');
+          if (img) {
+            var frame = Math.min(EXPLOSION_FRAMES, Math.floor(e.t / EXPLOSION_FRAME_MS));
+            drawSpriteFrame(ctx, img, frame, 17, 17, e.x - 8, e.y - 8, 17, 17);
+          } else {
+            const s = 1 - e.t / e.maxT;
+            ctx.fillStyle = `rgba(255, 200, 50, ${s})`;
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, 8 * s, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
       });
     },
