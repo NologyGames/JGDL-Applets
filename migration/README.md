@@ -1,6 +1,8 @@
-# JGDL games – run locally
+# JGDL games – run locally (or on GitHub Pages)
 
 Play **Hello!** and **Super Popcorn Machine** in your browser from this folder.
+
+**Live (if deployed):** [https://nologygames.github.io/JGDL-Applets/](https://nologygames.github.io/JGDL-Applets/)
 
 ---
 

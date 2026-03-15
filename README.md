@@ -18,3 +18,16 @@ This repository contains **JGDL** (Java Game Development Library) games: two leg
 2. **Super Popcorn Machine** — Two pans: balance and match popcorn by color.
 
 Both use the same JGDL engine (ported to JavaScript in `migration/js/jgdl/`) and original art and sound assets under `migration/assets/`.
+
+## Deploy (GitHub Pages)
+
+The app can be deployed so it’s playable online:
+
+1. **Enable GitHub Pages** in the repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+2. Push to `main` (or run the workflow manually). The workflow deploys the `migration/` folder to GitHub Pages.
+3. Once deployed, the games are available at:
+   - **https://&lt;org-or-user&gt;.github.io/JGDL-Applets/** (launcher)
+   - **https://&lt;org-or-user&gt;.github.io/JGDL-Applets/hello.html**
+   - **https://&lt;org-or-user&gt;.github.io/JGDL-Applets/popcorn.html**
+
+For the NologyGames org, that is: **https://nologygames.github.io/JGDL-Applets/**.
