@@ -628,23 +628,27 @@ function createHelloGame(canvas, ui) {
       }
     }
 
-    // 4) Next line bar and level bar ON TOP (sprite clipping like original)
+    // 4) Next line bar (original: only filled portion visible via window.fx = FrameSize*(TimeAccum/TimeLimit))
     const nx = HELLO.NEXT_LINE_X, ny = HELLO.NEXT_LINE_Y, nw = HELLO.NEXT_LINE_W, nh = HELLO.NEXT_LINE_H;
     const nextLineImg = assets && getImg('spr_NextLine.gif');
-    if (nextLineImg && state === 'game') {
-      const sw = Math.min(nextLineImg.width, nw);
-      const sh = Math.min(nextLineImg.height, nh);
-      ctx.drawImage(nextLineImg, 0, 0, sw, sh, nx, ny, nw, nh);
-      const fillW = (newLineLimit > 0) ? (nw * (newLineTimer / newLineLimit)) : 0;
-      if (fillW > 0) {
-        const srcFillW = (sw * fillW) / nw;
-        ctx.drawImage(nextLineImg, 0, 0, srcFillW, sh, nx, ny, fillW, nh);
+    if (state === 'game') {
+      const progress = newLineLimit > 0 ? Math.min(1, newLineTimer / newLineLimit) : 0;
+      const fillW = nw * progress;
+      if (nextLineImg) {
+        const sw = nextLineImg.width;
+        const sh = Math.min(nextLineImg.height, nh);
+        ctx.fillStyle = 'rgba(20, 30, 50, 0.9)';
+        ctx.fillRect(nx, ny, nw, nh);
+        if (fillW > 0) {
+          const srcFillW = (sw * fillW) / nw;
+          ctx.drawImage(nextLineImg, 0, 0, srcFillW, sh, nx, ny, fillW, nh);
+        }
+      } else {
+        ctx.fillStyle = '#3a4a5a';
+        ctx.fillRect(nx, ny, nw, nh);
+        ctx.fillStyle = 'rgba(255, 220, 100, 0.6)';
+        ctx.fillRect(nx, ny, fillW, nh);
       }
-    } else if (state === 'game') {
-      ctx.fillStyle = '#3a4a5a';
-      ctx.fillRect(nx, ny, nw, nh);
-      ctx.fillStyle = 'rgba(255, 220, 100, 0.6)';
-      ctx.fillRect(nx, ny, (newLineLimit > 0 ? nw * (newLineTimer / newLineLimit) : 0), nh);
     }
 
     // 5) Level completion bar (spr_LevelBar: left 14px = track, right 14px = gradient fill)
@@ -708,14 +712,7 @@ function createHelloGame(canvas, ui) {
     if (state === 'game') {
       newLineTimer += dt * 1000;
       if (newLineTimer >= newLineLimit) {
-        newLineTimer = 0;
-        insertSide = (insertSide + 1) % 4; // Left(0) -> Top(1) -> Right(2) -> Bottom(3)
-        const gameOver = board.insertPhones(getRandomPiece, insertSide);
-        if (gameOver) {
-          state = 'gameover';
-          return;
-        }
-        AudioManager.helloNewPhones();
+        triggerNextLine();
       }
     } else if (state === 'pregame') {
       state = 'game';
@@ -737,6 +734,17 @@ function createHelloGame(canvas, ui) {
     lastMouse = cell ? { mx: cell.mx, my: cell.my } : null;
   }
 
+  function triggerNextLine() {
+    newLineTimer = 0;
+    insertSide = (insertSide + 1) % 4;
+    const gameOver = board.insertPhones(getRandomPiece, insertSide);
+    if (gameOver) {
+      state = 'gameover';
+      return;
+    }
+    AudioManager.helloNewPhones();
+  }
+
   function onClick(mx, my) {
     if (state === 'main') {
       initLevel();
@@ -746,6 +754,11 @@ function createHelloGame(canvas, ui) {
       return;
     }
     if (state === 'game') {
+      const nx = HELLO.NEXT_LINE_X, ny = HELLO.NEXT_LINE_Y, nw = HELLO.NEXT_LINE_W, nh = HELLO.NEXT_LINE_H;
+      if (mx >= nx && mx <= nx + nw && my >= ny && my <= ny + nh) {
+        triggerNextLine();
+        return;
+      }
       const cell = board.fromScreen(mx, my);
       if (!cell) return;
 
