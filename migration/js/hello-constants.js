@@ -14,12 +14,16 @@ const HELLO = {
   NEXT_LINE_H: 8,
   // Next line bar top edge (Ringo and level bar must end above this)
   NEXT_LINE_TOP: 320,
-  // Score panel: frame (box) position; text is drawn INSIDE the frame with padding
-  PANEL_BOX_X: 322,
-  PANEL_BOX_Y: 82,
+  // Right panel (yellow border): horizontal span for centering the score box
+  RIGHT_PANEL_LEFT: 296,
+  RIGHT_PANEL_RIGHT: 448,
+  // Score panel: centered in right panel; labels and values inside box
   PANEL_BOX_W: 112,
+  PANEL_BOX_Y: 82,
   PANEL_LINE_HEIGHT: 20,
   PANEL_BOX_PAD: 10,
+  PANEL_VALUE_PAD_RIGHT: 2,
+  PANEL_VALUE_COLUMN_WIDTH: 46,
   // Ringo: above next line bar (bottom <= 320), level bar bottom-aligned with Ringo
   RINGO_X: 298,
   RINGO_Y: 145,

@@ -476,15 +476,19 @@ function createHelloGame(canvas, ui) {
   function getScorePanelLayout() {
     var pad = HELLO.PANEL_BOX_PAD != null ? HELLO.PANEL_BOX_PAD : 10;
     var lineH = HELLO.PANEL_LINE_HEIGHT;
-    var valueW = 42;
-    var boxX = HELLO.PANEL_BOX_X;
-    var boxY = HELLO.PANEL_BOX_Y;
     var boxW = HELLO.PANEL_BOX_W != null ? HELLO.PANEL_BOX_W : 112;
+    var panelLeft = HELLO.RIGHT_PANEL_LEFT != null ? HELLO.RIGHT_PANEL_LEFT : 296;
+    var panelRight = HELLO.RIGHT_PANEL_RIGHT != null ? HELLO.RIGHT_PANEL_RIGHT : HELLO.CANVAS_WIDTH;
+    var panelCenterX = (panelLeft + panelRight) / 2;
+    var boxX = Math.round(panelCenterX - boxW / 2);
+    var boxY = HELLO.PANEL_BOX_Y;
     var boxH = lineH * 3 + pad * 2;
-    var textX = boxX + pad;
+    var labelX = boxX + pad;
+    var valueColW = HELLO.PANEL_VALUE_COLUMN_WIDTH != null ? HELLO.PANEL_VALUE_COLUMN_WIDTH : 50;
+    var valuePadR = HELLO.PANEL_VALUE_PAD_RIGHT != null ? HELLO.PANEL_VALUE_PAD_RIGHT : pad;
+    var valueX = boxX + boxW - valuePadR - valueColW;
     var textY = boxY + pad;
-    var valX = boxX + boxW - pad - valueW;
-    return { textX: textX, textY: textY, boxX: boxX, boxY: boxY, boxW: boxW, boxH: boxH, pad: pad, lineH: lineH, valX: valX };
+    return { labelX: labelX, valueX: valueX, textY: textY, boxX: boxX, boxY: boxY, boxW: boxW, boxH: boxH, pad: pad, lineH: lineH };
   }
   function drawScorePanelBox() {
     if (state !== 'game' && state !== 'pregame') return;
@@ -498,27 +502,27 @@ function createHelloGame(canvas, ui) {
   function drawScorePanelText() {
     if (state !== 'game' && state !== 'pregame') return;
     var L = getScorePanelLayout();
-    var x = L.textX, y = L.textY;
-    var valX = L.valX;
+    var labelX = L.labelX, valueX = L.valueX, y = L.textY;
     ctx.font = 'bold 13px sans-serif';
     ctx.textBaseline = 'top';
+    ctx.textAlign = 'left';
     ctx.fillStyle = 'rgba(0,0,0,0.6)';
-    ctx.fillText('Level', x + 1, y + 1);
-    ctx.fillText('Score', x + 1, y + L.lineH + 1);
-    ctx.fillText('Phones', x + 1, y + L.lineH * 2 + 1);
+    ctx.fillText('Level', labelX + 1, y + 1);
+    ctx.fillText('Score', labelX + 1, y + L.lineH + 1);
+    ctx.fillText('Phones', labelX + 1, y + L.lineH * 2 + 1);
     ctx.fillStyle = '#fff';
-    ctx.fillText('Level', x, y);
-    ctx.fillText('Score', x, y + L.lineH);
-    ctx.fillText('Phones', x, y + L.lineH * 2);
+    ctx.fillText('Level', labelX, y);
+    ctx.fillText('Score', labelX, y + L.lineH);
+    ctx.fillText('Phones', labelX, y + L.lineH * 2);
     ctx.font = 'bold 14px sans-serif';
     ctx.fillStyle = 'rgba(0,0,0,0.5)';
-    ctx.fillText('' + (currentLevel + 1), valX + 1, y + 1);
-    ctx.fillText('' + points, valX + 1, y + L.lineH + 1);
-    ctx.fillText(phonesCollected + ' / ' + phonesToCollect, valX + 1, y + L.lineH * 2 + 1);
+    ctx.fillText('' + (currentLevel + 1), valueX + 1, y + 1);
+    ctx.fillText('' + points, valueX + 1, y + L.lineH + 1);
+    ctx.fillText(phonesCollected + ' / ' + phonesToCollect, valueX + 1, y + L.lineH * 2 + 1);
     ctx.fillStyle = '#ffc107';
-    ctx.fillText('' + (currentLevel + 1), valX, y);
-    ctx.fillText('' + points, valX, y + L.lineH);
-    ctx.fillText(phonesCollected + ' / ' + phonesToCollect, valX, y + L.lineH * 2);
+    ctx.fillText('' + (currentLevel + 1), valueX, y);
+    ctx.fillText('' + points, valueX, y + L.lineH);
+    ctx.fillText(phonesCollected + ' / ' + phonesToCollect, valueX, y + L.lineH * 2);
   }
 
   function draw() {
