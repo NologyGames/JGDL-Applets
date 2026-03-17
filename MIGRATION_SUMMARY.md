@@ -100,23 +100,3 @@ Legacy applet → modern web is doable: expect **iterative debugging**, **asset 
 
 **Recommendation:** Pair the migration with a **user or stakeholder who knows the original application**—scope, assets, architecture, and intended behavior. Their prompts (e.g. “use the assets in each game folder”, “JGDL is the shared engine”, “phones should be top and bottom”) are what steer the work toward a faithful, correct outcome instead of a superficially working clone.
 
----
-
-## Social post (LinkedIn) — copy-paste ready
-
-**We brought two 90s Java applet games back to life in the browser. Here’s what actually made it work.**
-
-A few months ago I had a pile of old Java applet code and assets—two games built on a custom engine (JGDL). I wanted them running in a modern browser. I could have rewritten everything by hand. Instead I paired with an AI agent and **someone who still knew the original apps**.
-
-The agent did the heavy lifting: porting the engine to JavaScript, wiring Canvas and Web Audio, fixing bugs, and adding a launcher and run scripts. But the **turning points** all came from human input:
-
-→ “You have two games, not one—consider both.”  
-→ “The original sounds and images are in each game folder. Use them.”  
-→ “JGDL is the shared engine—research it for logic and asset loading.”  
-→ “Phones should be on top and bottom so they connect by color.”
-
-Without those prompts, we’d have ended up with a single game, synthetic graphics, and ad-hoc logic. With them, we got a faithful migration: same look, same engine model, same behavior.
-
-If you’re sitting on legacy systems—applets, Flash, old desktop stacks—and wondering whether AI can help: it can. But **direction matters more than raw capability**. Pair the migration with someone who knows the system. Their prompts don’t just fix bugs; they set the strategy. That’s what made this one stick.
-
-#LegacyMigration #SoftwareEngineering #AI #TechDebt #WebDev
