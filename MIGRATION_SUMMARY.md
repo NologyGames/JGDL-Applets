@@ -1,12 +1,33 @@
 # JGDL Applet Game Migration — Summary
 
-A brief summary of the **JGDL applet game migration** agent effort: moving two legacy Java applet games to the modern browser. For engineers considering similar legacy migrations.
+A brief summary of the **JGDL applet game migration** agent effort: moving two legacy Java applet games to the modern browser. For engineers considering similar legacy migrations. Below: what the AI did on its own vs where **user know-how of the original application** was essential to shape the migration.
 
 ---
 
-## Summary of findings
+## What the AI did autonomously
 
-The migration succeeded because the **user had prior know-how of the original application**. They corrected scope (both games, not one), pointed to existing assets and the shared JGDL engine, and described intended behavior (e.g. Hello’s phones on top/bottom for connection). Without that domain knowledge, the agent would have stayed on synthetic assets, ad-hoc logic, and wrong layouts. **Having a stakeholder who knows the legacy system is critical to steer an AI-assisted migration in the right direction.**
+- **Target stack:** Chose HTML5, Canvas, and vanilla JavaScript (with Web Audio API) as the migration target; no build step.
+- **Structure:** Created the `migration/` folder, launcher (`index.html`), and separate pages for each game (`popcorn.html`, `hello.html`).
+- **Game logic:** Implemented boards, pieces, levels, score, tilt/balance (Popcorn), match-by-click removal, new-line insertion, level-up and game-over flows, pause, and HUD from reading the Java sources.
+- **Initial assumption:** First pass assumed original GIF/.au assets were missing and used programmatic graphics and synthesized sounds.
+- **Bug fixes (when given feedback):** Menu overlay blocking clicks → pointer-events and overlay click handler (capture phase). Popcorn score/counts not updating → single shared `levelRef` instead of a new one per frame. Engine startup failing → `addResources.call(this)` so `AddImage`/`AddSound` exist. Level-up popup timing, getRandomPiece/board refs, remove-list animation timing.
+- **Asset pipeline (after user said “use original assets”):** Asset loader (`asset-loader.js`) for images and `.au` files; μ-law decoder (encoding 1) for Web Audio; copied assets from original game folders into `migration/assets/popcorn/` and `migration/assets/hello/`; wired both games to load and draw original sprites and backgrounds.
+- **JGDL engine port (after user said “consider JGDL as engine”):** Researched Java JGDL, ported full engine to `migration/js/jgdl/` (JGDLMain, VideoManager, InputManager, TimeHandler, SoundManager, Scene, Layer, Sprite, Animation, Vector); loading % on canvas; wired both games to register resources and run via the engine loop.
+- **Operational tooling:** Loading timeout (15s) if assets hang; `run-server.sh` to pick a free port (3000, 3001, 4000, …); `?debug=1` and in-page log panel when the agent could not run a browser; README with run and debug instructions.
+
+The AI could implement, port, and fix once the **direction** was clear; it did not, on its own, correct scope (both games), switch to original assets, or adopt the shared JGDL architecture.
+
+---
+
+## Where user know-how was key
+
+- **Scope:** “You have 2 games: Hello and Popcorn – consider.” The agent had built only one game; the user corrected scope so both were in scope from the start.
+- **Assets:** “Why did you not consider original sounds and surfaces? They are all in each game folder.” The agent had assumed assets were missing. The user knew they existed and where they lived; that single prompt shifted the migration to real GIFs and `.au` sounds.
+- **Architecture:** “Consider JGDL as the underlying game engine shared by both games; research for game logic, loading of assets.” The user knew JGDL was the shared engine; without that, the agent would have kept ad-hoc per-game logic instead of a single ported engine.
+- **Unblocking:** The agent could not run a real browser. The user ran the app, opened DevTools, and pasted the console error (`this.AddImage is not a function`). That allowed the binding fix; **user as runner and log provider** was essential.
+- **Correct behavior:** “Hello! … we shall see phones on up and down side of the screen so they can be connected by color.” The user knew the intended Hello layout (phones top/bottom for connection by color); that steered the agent toward the correct design instead of a single grid.
+
+**Takeaway:** The migration succeeded because **a human with prior knowledge of the original application** set scope, pointed to assets and architecture, and described intended behavior. The AI executed and debugged once direction was set.
 
 ---
 
@@ -78,3 +99,24 @@ Takeaway: expect **multiple feedback loops** before “it works” in the browse
 Legacy applet → modern web is doable: expect **iterative debugging**, **asset and format mapping** (GIFs, μ-law `.au`), and **operational details** (HTTP, ports, overlay, `this` binding, shared state). Use the original engine and assets as the source of truth; document run steps and failure modes early so each cycle moves the needle.
 
 **Recommendation:** Pair the migration with a **user or stakeholder who knows the original application**—scope, assets, architecture, and intended behavior. Their prompts (e.g. “use the assets in each game folder”, “JGDL is the shared engine”, “phones should be top and bottom”) are what steer the work toward a faithful, correct outcome instead of a superficially working clone.
+
+---
+
+## Social post (LinkedIn) — copy-paste ready
+
+**We brought two 90s Java applet games back to life in the browser. Here’s what actually made it work.**
+
+A few months ago I had a pile of old Java applet code and assets—two games built on a custom engine (JGDL). I wanted them running in a modern browser. I could have rewritten everything by hand. Instead I paired with an AI agent and **someone who still knew the original apps**.
+
+The agent did the heavy lifting: porting the engine to JavaScript, wiring Canvas and Web Audio, fixing bugs, and adding a launcher and run scripts. But the **turning points** all came from human input:
+
+→ “You have two games, not one—consider both.”  
+→ “The original sounds and images are in each game folder. Use them.”  
+→ “JGDL is the shared engine—research it for logic and asset loading.”  
+→ “Phones should be on top and bottom so they connect by color.”
+
+Without those prompts, we’d have ended up with a single game, synthetic graphics, and ad-hoc logic. With them, we got a faithful migration: same look, same engine model, same behavior.
+
+If you’re sitting on legacy systems—applets, Flash, old desktop stacks—and wondering whether AI can help: it can. But **direction matters more than raw capability**. Pair the migration with someone who knows the system. Their prompts don’t just fix bugs; they set the strategy. That’s what made this one stick.
+
+#LegacyMigration #SoftwareEngineering #AI #TechDebt #WebDev
