@@ -160,7 +160,11 @@
   }
 
   (async function start() {
-    if (loadingEl) { loadingEl.classList.remove('hidden'); loadingEl.textContent = 'Loading...'; }
+    if (loadingEl) {
+        loadingEl.classList.remove('hidden');
+        var textEl = loadingEl.querySelector('.loading-text');
+        if (textEl) textEl.textContent = 'Loading...';
+      }
     if (menuEl) menuEl.classList.add('hidden');
     var assets = null;
     try {

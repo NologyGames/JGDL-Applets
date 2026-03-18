@@ -6,16 +6,19 @@
   <title>Super Popcorn Machine</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="game-popcorn">
   <div id="game-container">
     <canvas id="game-canvas" width="448" height="336" tabindex="0"></canvas>
     <div id="ui-overlay">
-      <div id="loading" class="hidden">
-        <p>Loading...</p>
+      <div id="loading" class="hidden" aria-live="polite">
+        <div class="loading-inner">
+          <div class="loading-spinner" aria-hidden="true"></div>
+          <p class="loading-text">Loading...</p>
+        </div>
       </div>
       <div id="main-menu">
-        <h1>Super Popcorn Machine</h1>
-        <p class="click-hint">Click to start</p>
+        <h1 class="game-title">Super Popcorn Machine</h1>
+        <button type="button" class="btn-start click-hint">Click to start</button>
       </div>
       <div id="hud" class="hidden">
         <div id="level-info">Level <span id="level-num">1</span></div>
