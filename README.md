@@ -2,7 +2,7 @@
 
 This repository contains **JGDL** (Java Game Development Library) games: two legacy Java applets that were migrated to run in the modern browser.
 
-**Origin.** The games and JGDL were originally developed in **2000** by [Nology](https://sites.google.com/site/nologygames/about-nology-games), a former game development company from Brazil.
+**Origins:** The games and JGDL were originally developed in **2000** by [Nology](https://sites.google.com/site/nologygames/about-nology-games), a former game development company from Brazil.
 
 ## What’s in this repo
 
